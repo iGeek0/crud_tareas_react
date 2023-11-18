@@ -3,19 +3,28 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 
-import { usuario } from '../data/info';
+import { usuario, token } from '../data/info';
 
 function Listado() {
 
     const [tareas, setTareas] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token
+    };
+
 
 
     const getTareas = async () => {
         setLoading(true);
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        };
         try {
-            const response = await axios.get(`https://dev4humans.com.mx/api/clases/tareas?usuario=${usuario}`);
+            const response = await axios.get(`https://dev4humans.com.mx/api/clases/tareas?usuario=${usuario}`, { headers });
             setTareas(response.data.data);
         } catch (error) {
             setTareas([]);
@@ -32,7 +41,7 @@ function Listado() {
     const eliminarTarea = async (id) => {
         setLoading(true);
         try {
-            const response = await axios.delete(`https://dev4humans.com.mx/api//clases/tareas?id=${id}&usuario=${usuario}`);
+            const response = await axios.delete(`https://dev4humans.com.mx/api//clases/tareas?id=${id}&usuario=${usuario}`, { headers });
             console.log('Respuesta de la API:', response.data);
             // const newTareas = tareas.filter(tarea => tarea.id !== id);
             // setTareas(newTareas);
@@ -59,6 +68,7 @@ function Listado() {
                                 <th>#</th>
                                 <th>Fecha</th>
                                 <th>Tarea</th>
+                                <th className='text-center'>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,7 +85,7 @@ function Listado() {
                             ))}
                             {tareas.length === 0 && (
                                 <tr>
-                                    <td colSpan="3" className='text-center'>No hay tareas</td>
+                                    <td colSpan="4" className='text-center'>No hay tareas</td>
                                 </tr>
                             )}
                         </tbody>

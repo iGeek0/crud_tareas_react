@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { usuario } from "../data/info";
+import { usuario, token } from "../data/info";
 
 function Detalle() {
 
@@ -9,6 +9,11 @@ function Detalle() {
         tarea: '',
         usuario: usuario,
     });
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token
+    };
 
     const { id } = useParams();
 
@@ -28,7 +33,7 @@ function Detalle() {
             return;
         }
         try {
-            const response = await axios.post('https://dev4humans.com.mx/api/Clases/tareas', formData);
+            const response = await axios.post('https://dev4humans.com.mx/api/Clases/tareas', formData, { headers });
             console.log('Respuesta de la API:', response.data);
             // limpiar formulario
             setFormData({
@@ -47,7 +52,7 @@ function Detalle() {
         if (id) {
             const getTarea = async () => {
                 try {
-                    const response = await axios.get(`https://dev4humans.com.mx/api/clases/tareas?usuario=${usuario}&id=${id}`);
+                    const response = await axios.get(`https://dev4humans.com.mx/api/clases/tareas?usuario=${usuario}&id=${id}`, { headers });
                     console.log('Respuesta de la API:', response.data);
                     setFormData(response.data.data);
                 } catch (error) {
